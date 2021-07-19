@@ -261,7 +261,7 @@ Multiclass SVM loss:
 
 <div align="center">
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{align*}where\: &S_{y_i}:the\: score\: of\: i-th\: example,that\: is\: to\: say,score\: of\: true\: class \\ &S_j:score\: of\: other\: class \end{align*}">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;where\:&space;&S_{y_i}:the\:&space;score\:&space;of\:&space;i-th\:&space;example,that\:&space;is\:&space;to\:&space;say,score\:&space;of\:&space;true\:&space;class&space;\\&space;&S_j:score\:&space;of\:&space;other\:&space;class&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;where\:&space;&S_{y_i}:the\:&space;score\:&space;of\:&space;i-th\:&space;example,that\:&space;is\:&space;to\:&space;say,score\:&space;of\:&space;true\:&space;class&space;\\&space;&S_j:score\:&space;of\:&space;other\:&space;class&space;\end{align*}" title="\begin{align*} where\: &S_{y_i}:the\: score\: of\: i-th\: example,that\: is\: to\: say,score\: of\: true\: class \\ &S_j:score\: of\: other\: class \end{align*}" /></a>
 
 </div>
 
@@ -345,7 +345,7 @@ Ans6:
 會變成與上面不同，是另外一個 loss function，且平方會導致原本很小的錯誤被放大檢視，但在 linear loss function 裡面對於很小的錯誤是可以容忍的
 
 
-### hinge loss
+#### hinge loss
 
 <div align="center">
 <img src="img/hinge_loss.png">
@@ -399,9 +399,144 @@ Ans: No! 因為像是 2W 帶入也會讓 Loss=0
  
 ---
 
-### Softmax classifier
+### Softmax classifier(Multinomial Logistic Regression)
 
-在 multi
+在 Multi-cliass SVM loss 中我們並沒有對 score function 輸出對於各個 class 的分數有一個很好解釋說分數到底是什麼意義, 只有強調 correct class 的分數要比不正確的 class 的分數還要高(甚至要高於某值);但在分數經過 softmax function 之後這些分數有了實質上的意義, 經過一串操作後這些分數會變成 positive number 後最後變成各個 class 的機率, 且每個 class 的機率皆介於 0~1 之間, 所有 class 的機率總和為 1，而理想上正確的分類所得到的機率應該為 1, 其他分類機率為 0
+
+在 SVM 裡面的 loss function: hinge loss 也替換成 cross-entropy loss:
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;L_i=-log(\frac{e^{f_{y_i}}}{\sum_{j}{e^{f_j}}})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;L_i=-log(\frac{e^{f_{y_i}}}{\sum_{j}{e^{f_j}}})&space;\end{align*}" title="\begin{align*} L_i=-log(\frac{e^{f_{y_i}}}{\sum_{j}{e^{f_j}}}) \end{align*}" /></a>
+</div>
+
+softmax function 就是其中的:
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;f_j(z)=(\frac{e^{z_j}}{\sum_{j}{e^{z_k}}})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;f_j(z)=(\frac{e^{z_j}}{\sum_{j}{e^{z_k}}})&space;\end{align*}" title="\begin{align*} f_j(z)=(\frac{e^{z_j}}{\sum_{j}{e^{z_k}}}) \end{align*}" /></a>
+</div>
+
+<br>
+
+在 cs231n 裡面講師稍微解釋了為什麼是取 negative log, 原因是 log is monotonic(單調) function, 要最大化 log function 相對簡單, 因此我們的目的是要讓正確的 class 有最大的機率, 只要針對最大化 log P of correct class 就完成了, 但由於 loss function 是用來量化壞的程度非好的程度 (loss 越高代表越偏離我們的 prediction), 因此我們加上一個負號更符合我們期待
+
+Example:
+
+<div align="center">
+<img src="img/softmax.png" width=500>
+</div>
+
+<br>
+
+<br>
+<div align="center">
+<img src="img/corss_entropy.png" width=400>
+</div>
+
+Q1: what is min/max possible loss L_i?
+
+A1: min loss = 0, and max is infinity, 如果 classifier 超級正確, 讓將會讓 eq 變成 -log(1)=0, 即 loss=0; 如果正確的 class 機率為 0, 則 -log(0) = infinity
+
+Q2: W is small so all s~0 what is the loss?
+
+A2: log(c)
+
+在做 softmax 時可能會遇到 numeric 上的問題, 因為有 exponential 的關係, 可能會讓數值變得很大, 有個技巧可以防止因為數值過大產生問題, 該技巧是在分子分母同乘上 C 而並不會影響計算結果, 類似做平移的概念:
+
+<br>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;\frac{e^{f_y_{i}}}{\sum_{j}{e^{f_j}}}&space;=&space;\frac{Ce^{f_{i}}}{C\sum_{j}{e^{f_{j}}}}&space;=&space;\frac{e^{f_{i}&plus;logC}}{\sum_{j}{e^{f_{j}&plus;logC}}}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;\frac{e^{f_y_{i}}}{\sum_{j}{e^{f_j}}}&space;=&space;\frac{Ce^{f_{i}}}{C\sum_{j}{e^{f_{j}}}}&space;=&space;\frac{e^{f_{i}&plus;logC}}{\sum_{j}{e^{f_{j}&plus;logC}}}&space;\end{align*}" title="\begin{align*} \frac{e^{f_y_{i}}}{\sum_{j}{e^{f_j}}} = \frac{Ce^{f_{i}}}{C\sum_{j}{e^{f_{j}}}} = \frac{e^{f_{i}+logC}}{\sum_{j}{e^{f_{j}+logC}}} \end{align*}" /></a>
+</div>
+
+<br>
+
+```python
+f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
+p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
+
+# instead: first shift the values of f so that the highest number is 0:
+f -= np.max(f) # f becomes [-666, -333, 0]
+p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
+```
+
+#### multi SVM loss vs. softmax
+
+對於 SVM 而言要求就是只要正確的 class 分數比其他 class 還要高出一個區間就可以算是 loss = 0, 但是對於 softmax 而言不一樣, softmax 會希望正確的分類跑出來的機率最好就是 1, 才會 loss = 0, 另外下圖中的例子分別利用兩種不同的方法得到的 loss 是不能比較的, 或是說沒有意義, 只有在同種分類器出來的 loss 值進行比較才有意義
+
+<div align="center">
+<img src="img/svmvssoftmax.png">
+</div>
+
+---
+
+## Optimization 
+
+目前筆記了:
+1. score function: 將 input image 轉為分類的 score
+2. loss funtion: 包含 SVM or softmax 等, 量化目前參數的好壞程度
+
+而 otimization 則是要做到如何找出最好的參數讓 loss 最小的方法, 我們可以將此任務比喻為一個人走在山中, 要找到海拔最低的點, 
+
+### strategy
+#### 1: A first very bad idea solution: Random search
+
+策略一就是矇著眼找到海拔最低點的過程。透過很多個參數 W 接著隨機取一者輸入 input 進行測試, 看每個 W 的結果如何, cs231n 提到以此方法測試 CIFAR-10 的 15% 的正確率, 但是這方法完全取決於運氣與隨機的機率
+
+#### 2: Random Local Search
+
+策略二則是生成幾個隨機的方向, 如果方向是往海拔更低的地方的話則往該處走一步, 接著重複步驟。隨機找出方向就是隨機生成 W, 接著生成一個隨機的走動距離: <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;\delta&space;W&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;\delta&space;W&space;\end{align*}" title="\begin{align*} \delta W \end{align*}" /></a>, 如果 <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;W&plus;\delta&space;W&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;W&plus;\delta&space;W&space;\end{align*}" title="\begin{align*} W+\delta W \end{align*}" /></a> 的 loss 更低就更新 W, 否則不做更新的動作
+
+#### 3: Following the Gradient
+
+策略三則是先用腳體會一下地形哪邊最陡峭, 此陡峭程度就是 loss function 的 gradient, 接著朝著最陡峭的下降方向下山
+
+在一維空間中的, 斜率可以代表某一點的瞬間變化率, gradient 不過只是他更 general 的說法, 可以應用在多維空間中, gradient 並非是 scalar, 而是 vector, gradient 就是由各個維度的斜率所組成的向量(aka. derivatives)
+
+the derivative of a 1-D function:
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x)}{h}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x)}{h}&space;\end{align*}" title="\begin{align*} \frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x+h)-f(x)}{h} \end{align*}" /></a>
+</div>
+
+<br>
+
+對於多個參數時我們稱之 derivatives partial derivatives, gradient 就只是對各個維度上做偏導數形成的向量
+
+### computing gradient
+
+1. finite differences: 就是直接用上面的定義下去求梯度, 缺點是太慢,  下面的例子僅有十個參數需要計算, 但如果 input 過多在計算一次的梯度運算上面就會花上過多時間, 且僅是求單一次梯度而已, 還未是最低點
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x)}{h}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x)}{h}&space;\end{align*}" title="\begin{align*} \frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x+h)-f(x)}{h} \end{align*}" /></a>
+</div>
+
+* 注意兩點:
+    1. 雖然在數學中 h 代表一個非常小, 一個趨近於 0 的數字, 但是在實做上我們以 1e-5 就足夠了
+    2. 使用 centered difference formula 的效果會更好:
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x-h)}{2h}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x-h)}{2h}&space;\end{align*}" title="\begin{align*}&space;\frac{d(f)}{dx}=\lim_{h\rightarrow0}\frac{f(x&plus;h)-f(x-h)}{2h}&space;\end{align*}" /></a>
+</div>
+
+<br>
+
+cs231n example:
+
+<div align="center">
+<img src="img/gradient.png" width=500>
+</div>
+
+2. gradient check: 直接做微分, 可以省去針對每一個參數做計算的過程, 微分完再帶入即可, 下面為 SVM loss function 作為範例:
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)]&space;\\&space;&\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)]&space;\\&space;&\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" title="\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)] \\ &\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" /></a>
+</div>
+
+其中 1 為 indicator function 表示如果括號中的條件為 true 則 function 值為 1, 如果為 false 則 function 值為 0
+
+### Gradient Descent
+
+
 
 ---
 
@@ -412,3 +547,5 @@ Ans: No! 因為像是 2W 帶入也會讓 Loss=0
 * [Day 5 / 必備實作知識與工具 / 關於 Training，還有一些基本功（一）](https://ithelp.ithome.com.tw/articles/10240556)
 * [Cross-validation: evaluating estimator performance](https://scikit-learn.org/stable/modules/cross_validation.html)
 * [機器學習：維度災難（Curse of Dimensionality）](https://blog.csdn.net/qq_39521554/article/details/80653712)
+* [李宏毅-2021【機器學習2021】類神經網路訓練不起來怎麼辦 (四)：損失函數 (Loss) 也可能有影響 slide](https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/classification_v2.pdf)
+* [李宏毅-2021【機器學習2021】類神經網路訓練不起來怎麼辦 (四)：損失函數 (Loss) 也可能有影響 YT](https://www.youtube.com/watch?v=O2VkP8dJ5FE&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=7&ab_channel=Hung-yiLee)

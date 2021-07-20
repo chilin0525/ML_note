@@ -528,15 +528,31 @@ cs231n example:
 
 2. gradient check: 直接做微分, 可以省去針對每一個參數做計算的過程, 微分完再帶入即可, 下面為 SVM loss function 作為範例:
 
+<br>
+
 <div align="center">
 <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)]&space;\\&space;&\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)]&space;\\&space;&\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" title="\begin{align*}&L_i=&space;\sum_{j\neq&space;{y_i}}[max(0,w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;)] \\ &\bigtriangledown_{w_{y_i}}L_i=-(\sum_{j\neq&space;{y_i}}1(w^T_{j}x_{i}-w^T_{y_{i}}x_{i}&plus;\Delta&space;>0))x_i\end{align*}" /></a>
 </div>
+
+<br>
 
 其中 1 為 indicator function 表示如果括號中的條件為 true 則 function 值為 1, 如果為 false 則 function 值為 0
 
 ### Gradient Descent
 
+計算出 loss function 的 gradient 接著對參數進行更新的過程稱為 Gradient Descent:
 
+```python
+while True:
+  weights_grad = evaluate_gradient(loss_fun, data, weights)
+  weights += - step_size * weights_grad 
+```
+
+其中 step size 又稱為 **learning rate**, 代表的意義是我們在找最低點時每次移動的距離大小, 如果我們跨一點有時候反而導致 loss 變高。同樣是 hyperparameter, cs231n 的講師提到在多個 hyperparameter 中優先對 learning rate 進行調整(要大一點還是小一點) 是不錯的選擇
+
+### Mini-batch gradient descent 
+
+在 training data 很多, 甚至多達百萬的情況時如果用上面描述的方法訓練, 為了更新一次參數可能就得花費大量運算資源與時間, 因此一個常用的技巧是訓練集中的小數據(**betches**)
 
 ---
 

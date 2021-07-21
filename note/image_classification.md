@@ -1,8 +1,40 @@
 # image classification
 
+- [image classification](#image-classification)
+  * [圖片分類與挑戰](#-------)
+  * [圖片分類的方法: data-driven approach](#---------data-driven-approach)
+  * [Nearest Neighbor Classifier](#nearest-neighbor-classifier)
+  * [k-Nearest Neighbor Classifier(KNN)](#k-nearest-neighbor-classifier-knn-)
+    + [distance metric](#distance-metric)
+    + [setting hyperparameter](#setting-hyperparameter)
+    + [cross validation](#cross-validation)
+    + [problem of KNN](#problem-of-knn)
+  * [Linear Classification](#linear-classification)
+    + [parametric approach](#parametric-approach)
+    + [problem](#problem)
+  * [loss function](#loss-function)
+    + [Mean absolute error (MAE)](#mean-absolute-error--mae-)
+    + [Mean square error (MSE)](#mean-square-error--mse-)
+    + [Multiclass Support Vector Machine loss](#multiclass-support-vector-machine-loss)
+      - [hinge loss](#hinge-loss)
+    + [overfitting](#overfitting)
+      - [what is overfitting](#what-is-overfitting)
+      - [solution of overfitting](#solution-of-overfitting)
+    + [Softmax classifier(Multinomial Logistic Regression)](#softmax-classifier-multinomial-logistic-regression-)
+      - [multi SVM loss vs. softmax](#multi-svm-loss-vs-softmax)
+  * [Optimization](#optimization)
+    + [strategy](#strategy)
+      - [1: A first very bad idea solution: Random search](#1--a-first-very-bad-idea-solution--random-search)
+      - [2: Random Local Search](#2--random-local-search)
+      - [3: Following the Gradient](#3--following-the-gradient)
+    + [computing gradient](#computing-gradient)
+    + [Gradient Descent](#gradient-descent)
+    + [Mini-batch gradient descent](#mini-batch-gradient-descent)
+  * [ref](#ref)
+
 ## 圖片分類與挑戰
 
-在 Computer Vision 中最核心的問題是如何對圖片進行分類，我們知道當我們人類看到一張動物圖片時，我們可以很快速且直覺地反應說這是哪種動物，因為我們的大腦早就有處理這些的神經存在，但是對於電腦而言，皆收到一張圖片然後要進行分類是有很大的難度的，對於電腦而言接收一張圖片輸入後看到的是可能是一個由 800x600x3 組成的(3 channel of RGB) 的 Array，要如何透過這個 Array 來判斷這張圖片就是某種動物是件相當困難的事情，而這個問題稱為 **semantic gap**，而我們把圖片歸類為某動物時(例如:貓)，貓就是個 semantic label，semantic gap 就是表示貓咪這個概念與電腦中的 pixel value 有相當大的差距
+在 Computer Vision 中最核心的問題是如何對圖片進行分類，我們知道當我們人類看到一張動物圖片時，我們可以很快速且直覺地反應說這是哪種動物，因為我們的大腦早就有處理這些的神經存在，但是對於電腦而言，皆收到一張圖片然後要進行分類是有很大的難度的，對於電腦而言接收一張圖片輸入後看到的是可能是一個由 800x600x3 組成的(3 channel of RGB) 的 Array，要如何透過這個 Array 來判斷這張圖片就是某種動物是件相當困難的事情，而這個問題稱為 **semantic gap**，而我們把圖片歸類為某動物時(例如:貓)，貓就是個 semantic label，semantic gap 就是表示貓咪這個概念與電腦中的 pixel value 的差距
 
 <div>
 <img src="img/cat_human.png" width=400>
@@ -24,7 +56,7 @@
 
 ## 圖片分類的方法: data-driven approach
 
-回到主題，我們該如何辨識一張圖片並對此圖片的內容進行分類？ok 我們也許會很直覺地想要用下面的方法來偵測，但是目前還沒有辦法透過這麼直接的演算法來進行分類:
+回到主題，我們該如何辨識一張圖片並對此圖片的內容進行分類？我們也許會很直覺地想要用下面的方法來偵測，但是目前還沒有辦法透過這麼直接的演算法來進行分類:
 
 ```python
 def classify_image(image):
@@ -32,7 +64,9 @@ def classify_image(image):
     return class_label
 ```
 
-另種想法是以動物來說也許會有動物的特徵來讓我們進行分類，例如貓有貓耳朵，尾巴等等，我們對圖片進行邊緣偵測後，把邊與角分類好，但缺點是錯誤率過高，其次是 not scalable(例如今天要偵測其他種動物，就得從頭來一遍，有點像是 hard-code 的概念)，我們要的是某種演算法可以通用在世界上各種東西上: data-driven approach
+另種想法是以動物的特徵進行分類，例如貓有貓耳朵，尾巴等等，我們對圖片進行邊緣偵測後，把邊與角分類好，但缺點是:
+1.錯誤率過高
+2. not scalable, 例如今天要偵測其他種動物，就得從頭來一遍，有點像是 hard-code 的概念， 我們要的是某種演算法可以通用在世界上各種東西上: data-driven approach
 
 what is data-driven approach: 不寫具體的分類規則來辨識一隻貓或是一隻狗，而是透過大量的貓的圖片(dataset)，接著讓 machine 來 learning and classifier，也就是說消化大量圖片並讓 machine 以某種方式去做 summarize，知道如何辨識後讓 machine 去辨識新的圖片測試看是否可以正確辨識，因此我們不會只有單一個 function 去做到這些事情，我們需要:
 
@@ -52,7 +86,7 @@ what is data-driven approach: 不寫具體的分類規則來辨識一隻貓或�
         return test_labels
     ```
 
-Example: CIFAR-10: 一個很小的 dataset, 包含了 training set of 50000 images(涵蓋 10 種 lables) and test set of 10000 images, each image is 32x32x3
+Example: CIFAR-10: 一個很小的 dataset, 包含 training set of 50000 images(涵蓋 10 種 lables) and test set of 10000 images, each image is 32x32x3
 
 <div align="center">
 
@@ -131,7 +165,12 @@ what is better? 無論是要如何選擇 distance function 還是 K 值的大小
 
 1. very slow at test time, 與我們的需求相反(fast at test time)
 2. distance metrics on pixel are not informative: 
-    * 上面介紹的像是 L1 distance or L2 並不適合用來描述圖片之間的相異程度, 例如下面四張圖片中右邊三張經過遮擋, shift pixel and 渲染成藍色, 經過 L2 distance 計算原圖與右邊三張經過處理的圖片後, 他們都有同樣的 L2 distance, 但明顯他們是不一樣的圖片, 因此我們可以知道 L2 distance 在這種視覺上的差異並不出色
+    * 上面介紹的像是 L1 distance or L2 並不適合用來描述圖片之間的相異程度, 例如下面四張圖片中右邊三張分別經過遮擋, shift pixel and 渲染成藍色, 經過 L2 distance 計算原圖與右邊三張經過處理的圖片後, 他們都有同樣的 L2 distance, 但明顯他們是不一樣的圖片, 因此我們可以知道 L2 distance 在這種視覺上的差異並不出色
+
+<div align="center">
+<img src="img/knnproblem.png" width=500>
+</div>
+
 3. curse of dimensionality: 
     * KNN  做的事情像是利用 data point 去切割區塊出來, 沒有對任何情況進行假設, 所以它依賴於樣本空間上有一定密度的訓練樣本, 所以我們如果希望 classifier 有好的效果, data point 就得密集地出現在空間中避免最近的點離該 pixel 過遠, 也就是過於不相近。
     * 底下的圖片可以看到在一維時我們可能只用 4 個 data point 就夠了, 提升到二維時需要 16 data point, 隨著維度的增長我們可能沒有那麼多的 data point 可以分佈在空間中
@@ -351,7 +390,7 @@ Ans6:
 <img src="img/hinge_loss.png">
 </div>
 
-所謂的 hinge loss(名子由來是因為 function 像是打開的書, 見下圖) 就是像是 max(0,-) 這種 function, 仔細思考的話這個 function 就是有個 threshold 卡著, 如果沒有達到 threshold 的話就是 0, 為什麼需要上面要用 max(0,-) 這種形式去表達 loss, 如果我們嘗試理解他的意思的話是用正確的分類 score 減去其他的分類的 score, 最後加上 Delta, **這段式子可以想成 SVM loss 對於分類的結果要求很高, 當我們 input 之後透過 score function 得到的 output 內容中的正確 class 的 score 要遠遠大於其他 class 的 score, 且至少超過 Delta 數值的量**, 如果分類的不夠好那麼就會被累加入 loss, 如果連那麼高要求都通過了那這個分類肯定不會太差
+所謂的 hinge loss(名子由來是因為 function 像是打開的書, 見下圖) 就是像是 max(0,-) 這種 function, 仔細思考的話這個 function 就是有個 threshold 卡著, 如果小於 threshold 的話就是 0, 為什麼需要上面要用 max(0,-) 這種形式去表達 loss, 如果我們嘗試理解他的意思的話是用正確的分類 score 減去其他的分類的 score, 最後加上 Delta, **這段式子可以想成 SVM loss 對於分類的結果要求很高, 當我們 input 之後透過 score function 得到的 output 內容中的正確 class 的 score 要遠遠大於其他 class 的 score, 且至少超過 Delta 數值的量**, 如果分類的不夠好那麼就會被累加入 loss, 如果連那麼高要求都通過了那這個分類肯定不會太差
 
 <div align="center">
 <img src="img/hinge_loss2.png" width=400>

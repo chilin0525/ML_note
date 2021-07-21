@@ -62,7 +62,7 @@ Example: CIFAR-10: 一個很小的 dataset, 包含了 training set of 50000 imag
 
 ## Nearest Neighbor Classifier
 
-現實中不實用，但因為簡單且容易實做方便於了解 image classification problem, 想法是根據 ,下圖為一個例子，有多個二維空間下包含五個顏色的點表示五個 category(class label), 而整張圖片中的每個 pixel 會根據最近的 class label 進行著色，也就是說整張圖會根據最接近的顏色點進行切割並塗上顏色形成下圖的樣子，缺點是可以看到綠色區域中有個黃色區域，而綠色區域深入了藍色與紫色的交界處等問題，因此有下面的 KNN 進行改善(Nearest Neighbor Classifier 應該就是 KNN 中 K=1 的情況)
+現實中不實用，但因為簡單且容易實做方便於了解 image classification problem。下圖為一個例子，有多個二維空間下包含五個顏色的點表示五個 category(class label), 而整張圖片中的每個 pixel 會根據最近的 class label 進行著色，也就是說整張圖會根據最接近的顏色點進行切割並塗上顏色形成下圖的樣子，缺點是可以看到綠色區域中有個黃色區域，而綠色區域深入了藍色與紫色的交界處等問題，因此有下面的 KNN 進行改善(Nearest Neighbor Classifier 應該就是 KNN 中 K=1 的情況)
 
 <div align="center">
 
@@ -119,7 +119,7 @@ what is better? 無論是要如何選擇 distance function 還是 K 值的大小
 
 ### cross validation
 
-除了上述切割的幾個 set 之外如果今天 dataset 較小, cross validation 的理念是一樣會把 train set 保留一份 validation set, 而 train set 輪流來當 validation set, 例如下圖中第一行 fold 1~4 拿來 train, 而 fold 5 就是用來驗證的, 接著用 fold 1~3 與 fold 5 train, 用 fold 4 進行驗證。
+除了上述切割的幾個 set 之外如果今天 dataset 較小, cross validation 的理念是一樣會把 train set 保留一份 validation set, 而 train set 輪流來當 validation set, 例如下圖中第一行 fold 1-4 拿來 train, 而 fold 5 就是用來驗證的, 接著用 fold 1-3 與 fold 5 train, 用 fold 4 進行驗證。
 
 但通常不宜用在 deep learning 上面, 因為重新 train 需要耗費大量時間與計算能力
 

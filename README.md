@@ -13,8 +13,11 @@
     * [Github: standford 學生筆記網站](https://stanford.edu/~shervine/teaching/cs-229/)
 * cs224
     * [中](https://www.bilibili.com/video/BV1r4411f7td?p=1)
-* [李宏毅-2016](https://www.youtube.com/playlist?list=PLJV_el3uVTsPy9oCRY30oBPNLCo89yu49)
-* [李宏毅-2021](https://www.youtube.com/playlist?list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J)
+* MTU
+    * [李宏毅-2016](https://www.youtube.com/playlist?list=PLJV_el3uVTsPy9oCRY30oBPNLCo89yu49)
+    * [李宏毅-2021](https://www.youtube.com/playlist?list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J)
+* MIT
+    * [Deep Learning textbook](https://www.deeplearningbook.org/)
 
 ## ref: slide
 

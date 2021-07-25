@@ -92,6 +92,31 @@ activation function 就是 non-linear function, and Why need non-linear in NN? �
 
 ## the architecture of neural networks
 
+
+<div align="center"><img src="img/nn2.png" width=500></div>
+
+1. 架構: 由上圖可以看出 neural network 組成元素分別為:
+    1. input leyer
+    2. hidden layers
+    3. output leyer
+
+2. type: 最常見的 neural networks 為 **fully-connected layer**, layer 中每個 neuron 皆與相鄰的 layer 有連接
+
+3. Naming conventions: 通常提到 N-layer nerual network 時的 n 並不包含 input layer
+    * single-layer NN: only input and output, no hidden layer
+
+4.
+
+<div align="center"><img src="img/nn.png"></div>
+
+* Ex:
+    * 左圖:
+        * name: 2-layer NN (or 1-hidden NN)
+        * fully-connected
+    * 右圖
+        * name: 3-layer NN (or 2-hidden NN)
+        * fully-connected
+
 ---
 
 ## problems

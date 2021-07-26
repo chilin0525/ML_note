@@ -514,7 +514,7 @@ p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
 1. score function: 將 input image 轉為分類的 score
 2. loss funtion: 包含 SVM or softmax 等, 量化目前參數的好壞程度
 
-而 otimization 則是要做到如何找出最好的參數讓 loss 最小的方法, 我們可以將此任務比喻為一個人走在山中, 要找到海拔最低的點, 
+而 otimization 則是要做到如何找出最好的參數讓 loss 最小(loss function 有最小值)的方法, 我們可以將此任務比喻為一個人走在山中, 要找到海拔最低的點
 
 ### strategy
 #### 1: A first very bad idea solution: Random search
@@ -530,6 +530,11 @@ p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
 策略三則是先用腳體會一下地形哪邊最陡峭, 此陡峭程度就是 loss function 的 gradient, 接著朝著最陡峭的下降方向下山
 
 在一維空間中的, 斜率可以代表某一點的瞬間變化率, gradient 不過只是他更 general 的說法, 可以應用在多維空間中, gradient 並非是 scalar, 而是 vector, gradient 就是由各個維度的斜率所組成的向量(aka. derivatives)
+
+
+<div align="center">
+<img src="img/gradient3.png" width=200>
+</div>
 
 the derivative of a 1-D function:
 
@@ -577,6 +582,19 @@ cs231n example:
 
 其中 1 為 indicator function 表示如果括號中的條件為 true 則 function 值為 1, 如果為 false 則 function 值為 0
 
+* Example [(from here)](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-%E5%9F%BA%E7%A4%8E%E6%95%B8%E5%AD%B8-%E4%BA%8C-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95-gradient-descent-406e1fd001f):
+
+<div align="center">
+<img src="img/gradient4.png" width=300>
+<img src="img/gradient5.png" width=400>
+</div>
+
+* Example [(from here)](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-%E5%9F%BA%E7%A4%8E%E6%95%B8%E5%AD%B8-%E4%BA%8C-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95-gradient-descent-406e1fd001f):
+
+<div align="center">
+<img src="img/gradient6.png" width=450>
+</div>
+
 ### Gradient Descent
 
 計算出 loss function 的 gradient 接著對參數進行更新的過程稱為 Gradient Descent:
@@ -587,11 +605,26 @@ while True:
   weights += - step_size * weights_grad 
 ```
 
-其中 step size 又稱為 **learning rate**, 代表的意義是我們在找最低點時每次移動的距離大小, 如果我們跨一點有時候反而導致 loss 變高。同樣是 hyperparameter, cs231n 的講師提到在多個 hyperparameter 中優先對 learning rate 進行調整(要大一點還是小一點) 是不錯的選擇
+其中 step size 又稱為 **learning rate**, 代表的意義是我們在找最低點時每次移動的距離大小, 如果我們跨一點有時候反而導致 loss 變高。同樣是 hyperparameter, cs231n 的講師提到在多個 hyperparameter 中第一個對 learning rate 進行調整(要大一點還是小一點) 是不錯的選擇
+
+<div align="center">
+<img src="img/gradient2.png" width=400>
+</div>
+
+<div align="center">
+<img src="img/gradient7.png" width=400>
+</div>
 
 ### Mini-batch gradient descent 
 
-在 training data 很多, 甚至多達百萬的情況時如果用上面描述的方法訓練, 為了更新一次參數可能就得花費大量運算資源與時間, 因此一個常用的技巧是訓練集中的小數據(**betches**)
+在 training data 很多, 甚至多達百萬的情況時如果用上面描述的方法訓練, 為了更新一次參數可能就得花費大量運算資源與時間, 因此一個常用的技巧是計算 training data 中的小數據(**betches**)
+
+```python
+while True:
+  data_batch = sample_training_data(data, 256) 
+  weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
+  weights += - step_size * weights_grad 
+```
 
 ---
 
@@ -601,6 +634,7 @@ while True:
 * [cs231n](https://cs231n.github.io/classification/)
 * [Day 5 / 必備實作知識與工具 / 關於 Training，還有一些基本功（一）](https://ithelp.ithome.com.tw/articles/10240556)
 * [Cross-validation: evaluating estimator performance](https://scikit-learn.org/stable/modules/cross_validation.html)
-* [機器學習：維度災難（Curse of Dimensionality）](https://blog.csdn.net/qq_39521554/article/details/80653712)
-* [李宏毅-2021【機器學習2021】類神經網路訓練不起來怎麼辦 (四)：損失函數 (Loss) 也可能有影響 slide](https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/classification_v2.pdf)
-* [李宏毅-2021【機器學習2021】類神經網路訓練不起來怎麼辦 (四)：損失函數 (Loss) 也可能有影響 YT](https://www.youtube.com/watch?v=O2VkP8dJ5FE&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=7&ab_channel=Hung-yiLee)
+* [Curse of Dimensionality](https://blog.csdn.net/qq_39521554/article/details/80653712)
+* [【機器學習2021】類神經網路訓練不起來怎麼辦 (四)：損失函數 (Loss) 也可能有影響](https://www.youtube.com/watch?v=O2VkP8dJ5FE&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=7&ab_channel=Hung-yiLee)
+* [【機器學習2021】預測本頻道觀看人數 (下) - 深度學習基本概念簡介](https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression%20(v16).pdf)
+* [機器/深度學習-基礎數學(二):梯度下降法(gradient descent)](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-%E5%9F%BA%E7%A4%8E%E6%95%B8%E5%AD%B8-%E4%BA%8C-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95-gradient-descent-406e1fd001f)

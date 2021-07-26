@@ -83,6 +83,23 @@ activation function 就是 non-linear function, and Why need non-linear in NN? �
 </div>
 
 ### Linear Activation Function
+
+<div align="center">
+<img src="img/sigmoid.png" width=300>
+</div>
+
+<br>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;\sigma&space;(x)=\frac{1}{1&plus;e^{-x}}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;\sigma&space;(x)=\frac{1}{1&plus;e^{-x}}&space;\end{align*}" title="\small \begin{align*} \sigma (x)=\frac{1}{1+e^{-x}} \end{align*}" /></a>
+</div>
+
+<br>
+
+* 特性:
+    * range: [0,1]
+    * 曾經因為性質(0與1) 與 firing rate 相近而流行, 但後來的 ReLU 從生物學上看更合理
+
 ### Sigmoid Activation Function
 ### Hyperbolic Tangent Activation Function
 ### Rectified Linear Unit (ReLU) Activation Function

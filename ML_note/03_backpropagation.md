@@ -194,7 +194,7 @@ Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為
 Example [from cs231n](https://cs231n.github.io/optimization-2/):
 
 <div align="center">
-<img src="img/backpropagation_ex.png">
+<img src="img/backpropagation_ex.png" width=600>
 </div>
 
 <div align="center">
@@ -231,6 +231,10 @@ Example [from cs231n](https://cs231n.github.io/optimization-2/):
 <div align="center">
 <img src="img/backpropagation_summary.png">
 </div>
+
+<br>
+
+將剩下的部份計算完:
 
 <br>
 

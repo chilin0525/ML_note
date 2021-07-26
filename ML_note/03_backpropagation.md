@@ -78,7 +78,10 @@ backpropagation 顧名思義就是從後面往前進行計算:
 
 Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為這邊的 function 太過簡單, 很容易做偏微分, 但如果是一個很複雜的 function 依然可以利用 computation graph 做出來且容易 implement
 
-因此總結 computation graph 要如何計算 local gradient, 就是用上游得到的 gradients 乘上 local gradient 就能得到 input gradient, 上面只是個很簡單的例子, 甚至我們用偏微分就可以快速得到答案, 接著我們進一步說明該如何做 backpropagation:
+---
+
+
+上面只是個很簡單的例子, 甚至我們用偏微分就可以快速得到答案, 接著我們進一步說明該如何做 backpropagation:
 
 以 [Hung-yi Lee ML2016 Lecture 7: Backpropagation](https://www.youtube.com/watch?v=ibJpTrp5mcE&list=PLJV_el3uVTsPy9oCRY30oBPNLCo89yu49&index=12&ab_channel=Hung-yiLee) 作為例子:
 
@@ -86,7 +89,7 @@ Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為
 
 
 <div align="center">
-<img src="img/Backpropagation.png" width=400>
+<img src="img/Backpropagation.png" width=450>
 </div>
 
 <br>
@@ -117,6 +120,10 @@ Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為
 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;&\frac{\partial&space;z}{\partial&space;w_{1}}=x_{1}&space;\\&space;&\frac{\partial&space;z}{\partial&space;w_{2}}=x_{2}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;&\frac{\partial&space;z}{\partial&space;w_{1}}=x_{1}&space;\\&space;&\frac{\partial&space;z}{\partial&space;w_{2}}=x_{2}&space;\end{align*}" title="\small \begin{align*} &\frac{\partial z}{\partial w_{1}}=x_{1} \\ &\frac{\partial z}{\partial w_{2}}=x_{2} \end{align*}" /></a>
 </div>
 <br>
+
+<div align="center">
+<img src="img/Backpropagation7.png" width=450>
+</div>
 
 ## backward pass
 
@@ -149,7 +156,7 @@ Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為
 
 <br>
 
-剩餘情況只要求出就完成了:
+剩餘的工作是求出下列兩者我們在上面假設已經完成的部份:
 
 <div align="center">
 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;\frac{\partial&space;Loss}{\partial&space;{z}'},\frac{\partial&space;Loss}{\partial&space;{z}''}?&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;\frac{\partial&space;Loss}{\partial&space;{z}'},\frac{\partial&space;Loss}{\partial&space;{z}''}?&space;\end{align*}" title="\small \begin{align*} \frac{\partial Loss}{\partial {z}'},\frac{\partial Loss}{\partial {z}''}? \end{align*}" /></a>
@@ -184,22 +191,70 @@ Q: 為什麼不直接做偏微分, 也可以直接得到一樣的結果是因為
 
 <br>
 
-<div align="center">
-<img src="img/computation_graph8.png" width=400>
-</div>
-
-<br>
-
-Example:
+Example [from cs231n](https://cs231n.github.io/optimization-2/):
 
 <div align="center">
-<img src="img/computation_graph9.png">
+<img src="img/backpropagation_ex.png">
 </div>
 
 <div align="center">
 <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;&f(w,x)=\frac{1}{1&plus;e^{-(w_0x_0&plus;w_1x_1&plus;w_2)}}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;&f(w,x)=\frac{1}{1&plus;e^{-(w_0x_0&plus;w_1x_1&plus;w_2)}}&space;\end{align*}" title="\begin{align*} &f(w,x)=\frac{1}{1+e^{-(w_0x_0+w_1x_1+w_2)}} \end{align*}" /></a>
 </div>
 
+從尾巴開始!
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;\frac{\partial&space;L}{\partial&space;L}&=1&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;\frac{\partial&space;L}{\partial&space;L}&=1&space;\end{align*}" title="\small \begin{align*} \frac{\partial L}{\partial L}&=1 \end{align*}" /></a>
+</div>
+
+<br>
+
+綠色部份是我們在 forward pass 中得到的, 紅色部份為對應的 gradient
+
+<br>
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;L&=\frac{1}{h}&space;&space;\\&space;\frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{h^{2}}\:&space;\:&space;\:&space;h=1.37&space;\\&space;\frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{1.37^{2}}=-0.53&space;\\&space;&\:&space;\\&space;h&=g\times&space;1&space;&space;\\&space;\frac{\partial&space;h}{\partial&space;g}&=1&space;\\&space;\frac{\partial&space;L}{\partial&space;g}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}=0.53\times&space;1=-0.53&space;\\&space;&\:&space;\\&space;g&=e^{f}&space;\\&space;\frac{\partial&space;g}{\partial&space;f}&=e^{f}&space;\\&space;\frac{\partial&space;g}{\partial&space;f}&=e^{-1}&space;\\&space;\frac{\partial&space;L}{\partial&space;f}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}\frac{\partial&space;g}{\partial&space;f}=-0.53\times&space;e^{-1}=-0.20&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;L&=\frac{1}{h}&space;&space;\\&space;\frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{h^{2}}\:&space;\:&space;\:&space;h=1.37&space;\\&space;\frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{1.37^{2}}=-0.53&space;\\&space;&\:&space;\\&space;h&=g\times&space;1&space;&space;\\&space;\frac{\partial&space;h}{\partial&space;g}&=1&space;\\&space;\frac{\partial&space;L}{\partial&space;g}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}=0.53\times&space;1=-0.53&space;\\&space;&\:&space;\\&space;g&=e^{f}&space;\\&space;\frac{\partial&space;g}{\partial&space;f}&=e^{f}&space;\\&space;\frac{\partial&space;g}{\partial&space;f}&=e^{-1}&space;\\&space;\frac{\partial&space;L}{\partial&space;f}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}\frac{\partial&space;g}{\partial&space;f}=-0.53\times&space;e^{-1}=-0.20&space;\end{align*}" title="\small \begin{align*}&space;L&=\frac{1}{h}&space; \\ \frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{h^{2}}\:&space;\:&space;\:&space;h=1.37 \\ \frac{\partial&space;L}{\partial&space;h}&=\frac{-1}{1.37^{2}}=-0.53 \\ &\: \\ h&=g\times&space;1&space; \\ \frac{\partial&space;h}{\partial&space;g}&=1 \\ \frac{\partial&space;L}{\partial&space;g}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}=0.53\times 1=-0.53 \\ &\: \\ g&=e^{f} \\ \frac{\partial&space;g}{\partial&space;f}&=e^{f} \\ \frac{\partial&space;g}{\partial&space;f}&=e^{-1} \\ \frac{\partial&space;L}{\partial&space;f}&=\frac{\partial&space;L}{\partial&space;h}\frac{\partial&space;h}{\partial&space;g}\frac{\partial&space;g}{\partial&space;f}=-0.53\times e^{-1}=-0.20 \end{align*}" /></a>
+</div>
+
+<br>
+
+## summary
+
+可以看到我們在上面的計算過程仍然挺複雜的, 總結 Backpropagation 到底該怎麼做: **先算出 forward pass, 再算出最後的 gradient, 接著由後往前將上游的 gradient 乘上 local 做偏微分並帶入 forward pass 的結果**
+
+<br>
+<div align="center">
+<img src="img/computation_graph8.png" width=450>
+</div>
+<br>
+
+<div align="center">
+<img src="img/backpropagation_summary.png">
+</div>
+
+<br>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;e}&=-0.20\times&space;\frac{\partial&space;f}{\partial&space;e}&space;\\&space;&=-0.20\times&space;-1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;d}&=0.20\times&space;\frac{\partial&space;e}{\partial&space;d}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;c}&=0.20\times&space;\frac{\partial&space;e}{\partial&space;c}&space;\\&space;&=0.20\times&space;1=0.20&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;e}&=-0.20\times&space;\frac{\partial&space;f}{\partial&space;e}&space;\\&space;&=-0.20\times&space;-1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;d}&=0.20\times&space;\frac{\partial&space;e}{\partial&space;d}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;c}&=0.20\times&space;\frac{\partial&space;e}{\partial&space;c}&space;\\&space;&=0.20\times&space;1=0.20&space;\end{align*}" title="\small \begin{align*}\frac{\partial L}{\partial e}&=-0.20\times \frac{\partial f}{\partial e} \\ &=-0.20\times -1=0.20 \\ \frac{\partial L}{\partial d}&=0.20\times \frac{\partial e}{\partial d} \\ &=0.20\times 1=0.20 \\ \frac{\partial L}{\partial c}&=0.20\times \frac{\partial e}{\partial c} \\ &=0.20\times 1=0.20 \end{align*}" /></a>
+</div>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;a}&=0.20\times&space;\frac{\partial&space;d}{\partial&space;a}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;b}&=0.20\times&space;\frac{\partial&space;d}{\partial&space;b}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;w_{0}}&=0.20\times&space;\frac{\partial&space;a}{\partial&space;w_{0}}&space;\\&space;&=0.20\times&space;-1=-0.20&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;a}&=0.20\times&space;\frac{\partial&space;d}{\partial&space;a}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;b}&=0.20\times&space;\frac{\partial&space;d}{\partial&space;b}&space;\\&space;&=0.20\times&space;1=0.20&space;\\&space;\frac{\partial&space;L}{\partial&space;w_{0}}&=0.20\times&space;\frac{\partial&space;a}{\partial&space;w_{0}}&space;\\&space;&=0.20\times&space;-1=-0.20&space;\end{align*}" title="\small \begin{align*}\frac{\partial L}{\partial a}&=0.20\times \frac{\partial d}{\partial a} \\ &=0.20\times 1=0.20 \\ \frac{\partial L}{\partial b}&=0.20\times \frac{\partial d}{\partial b} \\ &=0.20\times 1=0.20 \\ \frac{\partial L}{\partial w_{0}}&=0.20\times \frac{\partial a}{\partial w_{0}} \\ &=0.20\times -1=-0.20 \end{align*}" /></a>
+</div>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;x_{0}}&=0.20\times&space;\frac{\partial&space;a}{\partial&space;x_{0}}&space;\\&space;&=0.20\times&space;2=0.40&space;\\&space;\frac{\partial&space;L}{\partial&space;w_{1}}&=0.20\times&space;\frac{\partial&space;b}{\partial&space;w_{1}}&space;\\&space;&=0.20\times&space;-2=-0.40&space;\\&space;\frac{\partial&space;L}{\partial&space;x_{1}}&=0.20\times&space;\frac{\partial&space;b}{\partial&space;x_{1}}&space;\\&space;&=0.20\times&space;-3=-0.60&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;x_{0}}&=0.20\times&space;\frac{\partial&space;a}{\partial&space;x_{0}}&space;\\&space;&=0.20\times&space;2=0.40&space;\\&space;\frac{\partial&space;L}{\partial&space;w_{1}}&=0.20\times&space;\frac{\partial&space;b}{\partial&space;w_{1}}&space;\\&space;&=0.20\times&space;-2=-0.40&space;\\&space;\frac{\partial&space;L}{\partial&space;x_{1}}&=0.20\times&space;\frac{\partial&space;b}{\partial&space;x_{1}}&space;\\&space;&=0.20\times&space;-3=-0.60&space;\end{align*}" title="\small \begin{align*}\frac{\partial L}{\partial x_{0}}&=0.20\times \frac{\partial a}{\partial x_{0}} \\ &=0.20\times 2=0.40 \\ \frac{\partial L}{\partial w_{1}}&=0.20\times \frac{\partial b}{\partial w_{1}} \\ &=0.20\times -2=-0.40 \\ \frac{\partial L}{\partial x_{1}}&=0.20\times \frac{\partial b}{\partial x_{1}} \\ &=0.20\times -3=-0.60 \end{align*}" /></a>
+</div>
+
+<div align="center">
+<a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;c}&=\frac{\partial&space;L}{\partial&space;w_{2}}=0.20\times&space;\frac{\partial&space;e}{\partial&space;c}&space;\\&space;&=0.20\times&space;1=0.20&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}\frac{\partial&space;L}{\partial&space;c}&=\frac{\partial&space;L}{\partial&space;w_{2}}=0.20\times&space;\frac{\partial&space;e}{\partial&space;c}&space;\\&space;&=0.20\times&space;1=0.20&space;\end{align*}" title="\small \begin{align*}\frac{\partial L}{\partial c}&=\frac{\partial L}{\partial w_{2}}=0.20\times \frac{\partial e}{\partial c} \\ &=0.20\times 1=0.20 \end{align*}" /></a>
+</div>
+
+Ans:
+
+<div align="center">
+<img src="img/computation_graph9.png">
+</div>
 
 
 ---

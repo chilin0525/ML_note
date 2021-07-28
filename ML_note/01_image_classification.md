@@ -41,6 +41,10 @@
 <img src="img/cat_computer.png" width=350>
 </div>
 
+<div align="center">
+<img src="img/rgb_channel.png" width=450>
+</div>
+
 除了上述提到的如何透過這堆 pixel value 分類成某動物的問題，還需要考慮以下幾種情況:
 1. viewpoint variation: 顧名思義就是我們看某事物的樣貌會隨著我們視角而改變，同樣地 pixel value 也會因此改變，同種動物圖片經過視角改變過後是否能夠依然判斷出是某種動物呢？
 2. Illumination conditions: 不同亮度底下的動物圖片是否可以判斷出視同種動物？

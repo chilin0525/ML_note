@@ -117,7 +117,10 @@ activation function 就是 non-linear function, and Why need non-linear in NN? �
     2. hidden layers
     3. output leyer
 
-2. type: 最常見的 neural networks 為 **fully-connected layer**, layer 中每個 neuron 皆與相鄰的 layer 有連接
+2. type: 
+    * **fully-connected layer**, 常見的 neural networks, layer 中每個 neuron 皆與相鄰的 layer 有連接, 但也有一定的缺點, 會在[CNN](04_CNN.md)進行說明
+    * Convolutional NN (CNN)
+    * Recurrent NN (RNN)
 
 3. Naming conventions: 通常提到 N-layer nerual network 時的 n 並不包含 input layer
     * single-layer NN: only input and output, no hidden layer

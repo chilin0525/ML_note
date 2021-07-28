@@ -186,12 +186,12 @@ CNN architectures 由以下不同 type 的 layer 組成:
 
 <br>
 <div align="center">
-<img src="img/CNN.gif" width=500>
+<img src="img/CNN.gif" width=600>
 </div>
 
 <br>
 <div align="center">
-<img src="img/CNN2.gif" width=500>
+<img src="img/CNN2.gif" width=600>
 </div>
 
 ---

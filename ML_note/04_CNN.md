@@ -1,5 +1,23 @@
 # Convolutional Neural Network
 
+- [Convolutional Neural Network](#convolutional-neural-network)
+  * [why need](#why-need)
+  * [Property of image](#property-of-image)
+    + [1. Some patterns are much smaller than the whole image](#1-some-patterns-are-much-smaller-than-the-whole-image)
+    + [2. The same patterns appear in different regions](#2-the-same-patterns-appear-in-different-regions)
+    + [3. Subsampling the pixels will not change the object](#3-subsampling-the-pixels-will-not-change-the-object)
+  * [terminology](#terminology)
+  * [architectures](#architectures)
+    + [Convolutional Layer](#convolutional-layer)
+    + [Pooling Layer](#pooling-layer)
+      - [max pooling](#max-pooling)
+      - [disadvantage](#disadvantage)
+    + [Normalization Layer](#normalization-layer)
+    + [Flatten](#flatten)
+    + [Fully-Connected Layer](#fully-connected-layer)
+  * [ref](#ref)
+
+
 ## why need
 
 In [image classification](), 我們說明對電腦而言圖片就是一堆數字, 而這些數字拿出來排成一排後形成一個巨大的向量(代表的意義是 pixel, 在某顏色的強度), 此向量將會作為 network 的輸入:

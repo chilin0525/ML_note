@@ -11,12 +11,14 @@
     + [Convolutional Layer](#convolutional-layer)
     + [Pooling Layer](#pooling-layer)
       - [max pooling](#max-pooling)
+      - [avg pooling](#avg-pooling)
       - [disadvantage](#disadvantage)
     + [Normalization Layer](#normalization-layer)
     + [Flatten](#flatten)
     + [Fully-Connected Layer](#fully-connected-layer)
   * [ref](#ref)
 
+---
 
 ## why need
 
@@ -224,6 +226,15 @@ CNN architectures 由以下不同 type 的 layer 組成:
 
 <div align="center">
 <img src="img/Pooling.png" width=400>
+</div>
+
+#### avg pooling
+
+以 2x2 filter 為例, avg pooling 則是將 4 塊訊息加總後取平均作為這四塊的代表:
+
+<div align="center">
+<img src="img/avg_pool.png" width=500>
+<img src="img/avg_pool2.png" width=500>
 </div>
 
 #### disadvantage

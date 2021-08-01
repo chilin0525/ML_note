@@ -277,3 +277,4 @@ Normalization Layer 的用是為了抑制大腦的觀測機制, 但 Normalizatio
 
 * [CS231n Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/convolutional-networks/)
 * [Hung-yi Lee:Convolutional Neural Network (CNN)](https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/cnn_v4.pdf)
+* [What are Max Pooling, Average Pooling, Global Max Pooling and Global Average Pooling?](https://ecotrust-canada.github.io/markdown-toc/)

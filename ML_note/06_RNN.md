@@ -144,6 +144,92 @@ output generation:
 
 與 Elman Network 的差異是 Jordan network 存的是 output 非 hidden layer 的結果
 
+### Bidirectional RNN (BRNN)
+
+<div align="center"><img src="img/BRNN.png" width=300></div>
+
+### Deep RNN (DRNN)
+
+<div align="center"><img src="img/DRNN.png" width=300></div>
+
+---
+
+## long short-term memory (LSTM)
+
+<div align="center">
+<img src="img/LSTM.png" width=500>
+</div>
+
+<br>
+
+在上面我們對 memory 的概念是叫簡單版本, 可以隨時進行讀取, 現在常用的 memory 管理方式稱為 long short-term memory (LSTM)
+
+* 3 gate:
+    1. input gate: 
+        1. 當 neuron 要將輸出寫入 memory 時必須先經過 input gate, 如果 input gate 是關閉的情況則無法寫入
+        2. 開啟關閉的時機由 NN 透過學習得到
+    2. output gate:
+        1. 決定何時可以從 memory 讀出內容, 關閉時一樣無法讀 memory 內部的內容
+        2. 開啟關閉的時機由 NN 透過學習得到
+    3. forget gate:
+        1. 決定何時清除 memory 內的內容
+        2. 開啟關閉的時機由 NN 透過學習得到
+        3. **注意: 當 forget gate 打開時是記得目前的內容, 關閉才是清除目前的內容**
+
+而被稱為 long short-term memory 的原因此時也可以理解了, 在過去較為簡單的 memory 裡頭使用的 memory 隨時都可以 access, 且馬上就會被下一次 hidden layer 的輸出給洗掉, 但是對於 long short-term memory 而言更加嚴格管理什麼時候可以讀寫與清楚且只要不開啟 forget gate 的話 memory 內的內容也就能同時存放較久而不是馬上被清楚
+
+* 整個 LSTM 可以視為特別的 neuron 具有:
+    * 4 個 input: 
+        1. 要被存放到 memory 的值
+        2. 控制 input gate 的信號
+        3. 控制 output gate 的信號
+        4. 控制 forget gate 的信號
+    * 1 個 output
+
+
+<div align="center"><img src="img/LSTM-2.png" width=450></div>
+
+<div align="center">
+(LSTM formulation)
+</div>
+
+* 如果以正規的角度來看 LSTM:
+    * <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z&space;\end{align*}" title="\begin{align*} z \end{align*}" /></a> 為需要存到 memory 裡的值
+    * <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{i}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{i}&space;\end{align*}" title="\begin{align*} z_{i} \end{align*}" /></a> 控制 input gate 的訊號
+    * <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{f}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{f}&space;\end{align*}" title="\begin{align*} z_{f} \end{align*}" /></a> 控制 forget gate 的訊號
+    * <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{o}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{o}&space;\end{align*}" title="\begin{align*} z_{o} \end{align*}" /></a> 控制 output gate 的訊號
+    * a: output
+
+* step:
+    * (下面對於 <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{i}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{i}&space;\end{align*}" title="\begin{align*} z_{i} \end{align*}" /></a>, <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{f}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{f}&space;\end{align*}" title="\begin{align*} z_{f} \end{align*}" /></a>, <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{o}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{o}&space;\end{align*}" title="\begin{align*} z_{o} \end{align*}" /></a> 的 activation function 通常選用 sigmoid function 讓輸出保持在 0 與 1 之間更加富有 gate 的用意)
+    1. <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z&space;\end{align*}" title="\begin{align*} z \end{align*}" /></a> 經過 activation function 得到 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;g(z)&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;g(z)&space;\end{align*}" title="\small \begin{align*} g(z) \end{align*}" /></a>, <a href="https://www.codecogs.com/eqnedit.php?latex=\begin{align*}&space;z_{i}&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{align*}&space;z_{i}&space;\end{align*}" title="\begin{align*} z_{i} \end{align*}" /></a> 經過 activation function  得到 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" title="\small \begin{align*} f(z_{i}) \end{align*}" /></a>
+    2. 將 step1 兩項相乘:  <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;g(z)&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;g(z)&space;\end{align*}" title="\small \begin{align*} g(z) \end{align*}" /></a><a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" title="\small \begin{align*} f(z_{i}) \end{align*}" /></a>
+    3. memory 內容經過 activation function 得到 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;f(z_{f})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;f(z_{f})&space;\end{align*}" title="\small \begin{align*} f(z_{f}) \end{align*}" /></a>
+    4. 得到新的 memory 內容: <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;c'=g(z)f(z_{i})&plus;cf(z_{f})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;c'=g(z)f(z_{i})&plus;cf(z_{f})&space;\end{align*}" title="\small \begin{align*} c'=g(z)f(z_{i})+cf(z_{f}) \end{align*}" /></a>
+        * 若 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;f(z_{i})&space;\end{align*}" title="\small \begin{align*} f(z_{i}) \end{align*}" /></a> 為 0: 相當於沒有輸入; 若為 1 也等同於 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;g(z)&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;g(z)&space;\end{align*}" title="\small \begin{align*} g(z) \end{align*}" /></a>
+        * <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;f(z_{f})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;f(z_{f})&space;\end{align*}" title="\small \begin{align*} f(z_{f}) \end{align*}" /></a> 為 1 則新 memory 內容為輸入再加上原有 memory 內容; 為 0 則等同於輸入直接捨棄原有內容
+    5. <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;a=f(c')f(z_{o})&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/svg.latex?\small&space;\begin{align*}&space;a=f(c')f(z_{o})&space;\end{align*}" title="\small \begin{align*} a=f(c')f(z_{o}) \end{align*}" /></a>
+
+Example: TODO
+
+---
+
+## seq2seq
+
+如上文所提, 在 machine translation 時我們時常碰到 input 與 output length 不同的情況, 而我們需要透過 input sequence 去 predict output, Encoder-Decoder Model 就是用來處理這類情況 (可以把 seq2seq 當成目的, Encoder-Decoder Model 是解決 seq2seq 的方法)。常用於 NLP 中, 廣泛使用於 machine translation, 語音辨識等
+
+<div align="center">
+<img src="img/seq2seq.png" width=600>
+</div>
+
+
+1. 一個 RNN 作為 encoder: 將 input sequnce 消化後轉為某向量, 稱 **context vector**, 可以將 context vector 想成人類將 a 語言翻譯至 b 語言過中的中間產物。可將 encoder 理解為將人類可看得懂的內容(包含文字, 音訊)轉化為機器自己認得的內容(語言)
+2. 另個 RNN 作為 decoder: 接收 context vector 產生 predict。decoder 就是將自己理解後的內容再轉為人類看得懂的訊息
+
+### disadvantage
+
+上面提到 encoder 與 decoder 的橋樑就是 context vector, 因此 output sequence 完全依賴於 encoder 最後的 output, 但這個 context vector 長度固定, 因此如果在 input sequnce 過長的情況下會有很高的機率早期的內容被稀釋, 可以想成今天要背一百個數字, 最後只記得倒數幾個是一樣的道理, 而解決方法為 [attention: 07_transformer](07_transformer.md)
+
 ---
 
 ## ref
@@ -153,5 +239,8 @@ output generation:
 * [YT: ML Lecture 14: Unsupervised Learning - Word Embedding](https://www.youtube.com/watch?v=X7PH3NuYW0Q&ab_channel=Hung-yiLee)
 * [YT: Recurrent Neural Networks (RNN) and Long Short-Term Memory (LSTM)](https://www.youtube.com/watch?v=WCUNPb-5EYI&ab_channel=BrandonRohrer)
 * [YT: 10分鐘了解RNN的基本概念](https://www.youtube.com/watch?v=6AW80qmaAOk&ab_channel=%E6%9D%8E%E6%94%BF%E8%BB%92)
+* [RNN 结构详解](https://www.jiqizhixin.com/articles/2018-12-14-4)
 * [#003 RNN – Architectural Types of Different Recurrent Neural Networks](http://datahacker.rs/003-rnn-architectural-types-of-different-recurrent-neural-networks/)
 * [Recurrent Neural Networks cheatsheet](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks)
+* [Encoder-Decoder Seq2Seq Models, Clearly Explained!!](https://medium.com/analytics-vidhya/encoder-decoder-seq2seq-models-clearly-explained-c34186fbf49b)
+* [Encoder-Decoder 和 Seq2Seq](https://easyai.tech/ai-definition/encoder-decoder-seq2seq/)

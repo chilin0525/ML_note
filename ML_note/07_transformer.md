@@ -1,5 +1,25 @@
 # transformer
 
+- [transformer](#transformer)
+  * [issue in RNN](#issue-in-rnn)
+  * [self-attention](#self-attention)
+    + [mechanism](#mechanism)
+    + [Matrix Calculation of Self-Attention](#matrix-calculation-of-self-attention)
+    + [positional encoding](#positional-encoding)
+    + [multi-head self-attention](#multi-head-self-attention)
+  * [transformer](#transformer-1)
+    + [encoder](#encoder)
+      - [Layer Normalization](#layer-normalization)
+    + [decoder](#decoder)
+      - [autoregressive](#autoregressive)
+        * [start token](#start-token)
+        * [masked multi-head self-attention](#masked-multi-head-self-attention)
+        * [stop token](#stop-token)
+      - [non-autoregressive](#non-autoregressive)
+    + [cross attention](#cross-attention)
+  * [ref](#ref)
+
+
 ## issue in RNN
 
 1. RNN 為依照順序進行的, 在 t 時沒有完成就不能處理 t+1 的任務
@@ -133,6 +153,19 @@ step:
 
 ## transformer
 
+
+<div align="center">
+<img src="img/self-attention-25.png" width=400>
+</div>
+
+<br>
+
+上圖 transformer 的架構, 可以大致拆解:
+* encoder (左半邊)
+* decoder (右半邊), decoder 內部又可看作兩部份
+    1. decoder (含 masked multi-head self-attention layer 者)
+    2. decoder (含 encoder-decoder attention layer 者)
+
 ### encoder
 
 <div align="center">
@@ -207,7 +240,7 @@ decoder 分為 autoregressive 與 non-autoregressive
 <img src="img/self-attention-18.png" width=500>
 </div>
 
-如果暫時將 decoder 某部份給遮起來, 可以發現與 encoder 大同小異, 但是在 multi-head self-attention 的地方 decoder 變成 masked multi-head self-attention, 而與 encoder 不同的原因可以思考對於 encoder, input 與 output 皆可以平行處理, 也就是說可以平行輸入後平行輸出, 但是對於 decoder 會一次輸出一個 output, 非同時輸出, decoder 只能考慮他左邊得資訊沒辦法考慮右邊的資訊(未產生)
+如果暫時將 decoder 某部份給遮起來, 可以發現與 encoder 大同小異, 但是在 multi-head self-attention 的地方 decoder 變成 masked multi-head self-attention, 而與 encoder 不同的原因可以思考對於 encoder, input 與 output 皆可以平行處理, 也就是說可以平行輸入後平行輸出, 但是對於 decoder 會一次輸出一個 output, 非同時輸出, decoder 只能考慮他左邊得資訊沒辦法考慮右邊的資訊
 
 <div align="center">
 <img src="img/self-attention-19.png" width=500>
@@ -247,7 +280,7 @@ NAT 的好處:
 缺點:
 1. performance 較 AT 差: why? -> Multi-modality
 
-### cross attention
+###  cross attention
 
 <div align="center">
 <img src="img/self-attention-22.png" width=500>
@@ -255,7 +288,17 @@ NAT 的好處:
 
 <br>
 
-encoder 如何將 output 交給 decoder 的過程稱為 cross attention, 也就是上圖中框選出的區塊
+encoder 如何將 output 交給 decoder 的過程稱為 cross attention, 也就是上圖中框選出的區塊。其他藍色圈圈處可以看到是 from encoder, 綠色圈圈處是 from decoder。而此 layer 稱為 **encoder-decoder attention layer**
+
+<div align="center">
+<img src="img/self-attention-23.png" width=500>
+</div>
+
+<br>
+
+start token 先經過 self-attention 之後得到 output 經過 transform 後得到 q, encoder 的輸出再算出 key (以 <a href="https://www.codecogs.com/eqnedit.php?latex=\small&space;\begin{align*}&space;a'&space;\end{align*}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\small&space;\begin{align*}&space;a'&space;\end{align*}" title="\small \begin{align*} a' \end{align*}" /></a> 表示已經過 normalization) and value, 將 q 乘上 k 後乘上 value 最後相加作為 FC 的 input。所以整個 cross attention 的過程就是經由 decoder 產生的 q 到 encoder 所產生的資訊裡頭抽取資訊出來作為接下來 decoder FC 的 input
+
+因此可以稍微比較 masked multi-head self-attention 中與 encoder-decoder attention layer 的不同是較 masked multi-head self-attention 中 query, key 與 value 的來源相同 ; 但是對於 encoder-decoder attention layer 的 query 與 key, value 來源不同
 
 ---
 

@@ -1,5 +1,21 @@
 # Recurrent Neural Network
 
+- [Recurrent Neural Network](#recurrent-neural-network)
+  * [why need](#why-need)
+  * [architecture](#architecture)
+    + [vector](#vector)
+      - [one-hot encoding](#one-hot-encoding)
+      - [word embedding](#word-embedding)
+    + [Elman RNN (Vanilla RNN)](#elman-rnn--vanilla-rnn-)
+    + [Jordan network](#jordan-network)
+    + [Bidirectional RNN (BRNN)](#bidirectional-rnn--brnn-)
+    + [Deep RNN (DRNN)](#deep-rnn--drnn-)
+  * [long short-term memory (LSTM)](#long-short-term-memory--lstm-)
+  * [seq2seq](#seq2seq)
+    + [disadvantage](#disadvantage)
+  * [ref](#ref)
+
+
 ## why need
 
 <div align="center">

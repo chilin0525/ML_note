@@ -1,10 +1,14 @@
 # ML_note
 
-* tool
+* note:
     * 數學式以 [codecog](https://www.codecogs.com/latex/eqneditor.php?latex=%5Csmall&space;%5Cbegin%7Balign*%7D&space;f(x)&=(-3)%5E3+3(-3)%5E2-6(-3)+14&space;%5C%5C&space;&=-27+27+18+14&space;%5C%5C&space;&=32&space;%5Cend%7Balign*%7D) 生成 svg 
     * [TOC generator](https://ecotrust-canada.github.io/markdown-toc/)
-* ML tool
+* ML:
     * [netron: Visualizer for neural network](https://github.com/lutzroeder/netron)
+* GPU:
+    * [gpustat](https://github.com/wookayin/gpustat)
+* NVIDIA
+    * [Nsight Systems](https://docs.nvidia.com/nsight-systems/UserGuide/index.html)
 
 ## ref: course 
 
